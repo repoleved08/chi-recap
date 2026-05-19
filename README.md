@@ -1,6 +1,28 @@
 # Chi-Recap: Todo API with DDD Architecture
 
-A clean, production-ready Todo API built with Go using Domain-Driven Design (DDD) patterns, Chi router, GORM, and MySQL.
+A clean, production-ready Todo API built with Go using Domain-Driven Design (DDD) patterns, Chi router, GORM, MySQL, and **Huma for automatic API documentation**.
+
+### 🎯 Key Features
+
+- ✅ **Domain-Driven Design** - Clean separation of concerns
+- ✅ **Huma Documentation** - Auto-generated OpenAPI/Swagger UI
+- ✅ **GORM ORM** - Type-safe database access
+- ✅ **MySQL** - Production-ready database
+- ✅ **Chi Router** - Fast HTTP router
+- ✅ **Database Migrations** - Automated schema management
+- ✅ **Docker Support** - Easy local development
+
+### 📚 Interactive API Documentation
+
+Once running, access the API documentation at:
+
+| Resource | URL |
+|----------|-----|
+| **Swagger UI** | `http://localhost:8888/docs` |
+| **OpenAPI Schema** | `http://localhost:8888/openapi.json` |
+| **ReDoc** | `http://localhost:8888/docs/redoc` |
+
+See [HUMA_DOCUMENTATION.md](./HUMA_DOCUMENTATION.md) for details.
 
 ## Project Structure
 

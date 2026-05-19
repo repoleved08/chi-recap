@@ -69,15 +69,18 @@ func main() {
 	// Initialize services
 	todoService := services.NewTodoService(todoRepo)
 
-	// Setup routes
-	router := api.SetupRoutes(todoService)
+	// Setup Huma API with documentation
+	router, _ := api.SetupHumaAPI(todoService)
 
 	// Start server
 	port := getEnv("PORT", "8888")
 	addr := fmt.Sprintf("0.0.0.0:%s", port)
 
 	log.Printf("✓ Database connected and migrated successfully")
+	log.Printf("✓ Huma API configured")
 	log.Printf("Starting server on %s", addr)
+	log.Printf("📚 API Documentation available at http://%s/docs", addr)
+	log.Printf("📖 OpenAPI Schema available at http://%s/openapi.json", addr)
 	if err := http.ListenAndServe(addr, router); err != nil {
 		log.Fatalf("Server error: %v", err)
 	}

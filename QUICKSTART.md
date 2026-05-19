@@ -19,8 +19,16 @@ go run main.go
 
 You should see:
 ```
+✓ Database connected and migrated successfully
+✓ Huma API configured
 Starting server on 0.0.0.0:8888
+📚 API Documentation available at http://localhost:8888/docs
+📖 OpenAPI Schema available at http://localhost:8888/openapi.json
 ```
+
+## Step 2b: View API Documentation
+
+Open http://localhost:8888/docs in your browser to see the interactive Swagger UI with all endpoints and the ability to test them directly!
 
 ## Step 3: Test the API
 

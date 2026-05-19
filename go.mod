@@ -3,6 +3,7 @@ module chi-recap
 go 1.26.2
 
 require (
+	github.com/danielgtaylor/huma/v2 v2.38.0
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/google/uuid v1.6.0
 	gorm.io/driver/mysql v1.5.6
