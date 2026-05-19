@@ -1,0 +1,11 @@
+-- Rollback: Remove priority field from todos table
+-- This demonstrates how to write down migrations
+
+-- Remove the index first (required before dropping column)
+DROP INDEX idx_priority ON todos;
+
+-- Then remove the column
+ALTER TABLE todos DROP COLUMN priority;
+
+-- Note: Always drop indexes before dropping columns
+-- This prevents "Error 1553: Cannot DROP INDEX ... used in a foreign key constraint"

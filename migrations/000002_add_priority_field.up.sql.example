@@ -1,0 +1,13 @@
+-- Example migration to add priority field to todos table
+-- This demonstrates how to create new migrations
+
+-- Add a new column with default value
+ALTER TABLE todos ADD COLUMN priority INT DEFAULT 0 NOT NULL AFTER status;
+
+-- Add an index for efficient sorting
+CREATE INDEX idx_priority ON todos(priority);
+
+-- You can also add multiple changes in one migration:
+-- ALTER TABLE todos ADD COLUMN tags VARCHAR(255);
+-- ALTER TABLE todos ADD COLUMN due_date BIGINT;
+-- CREATE INDEX idx_due_date ON todos(due_date);
