@@ -1,38 +1,68 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
-	"github.com/danielgtaylor/huma/v2"
-	"github.com/danielgtaylor/huma/v2/adapters/humachi"
-	"github.com/go-chi/chi/v5"
+	"chi-recap/api"
+	"chi-recap/internal/application/services"
+	"chi-recap/internal/infrastructure/config"
+	"chi-recap/internal/infrastructure/persistence"
 
-	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
+	"gorm.io/gorm"
 )
 
-// GreetingOutput represents the greeting operation response.
-type GreetingOutput struct {
-	Body struct {
-		Message string `json:"message" example:"Hello, world!" doc:"Greeting message"`
+func main() {
+	// Database configuration
+	dbConfig := config.DatabaseConfig{
+		Host:     getEnv("DB_HOST", "localhost"),
+		Port:     getEnv("DB_PORT", "3306"),
+		Username: getEnv("DB_USERNAME", "root"),
+		Password: getEnv("DB_PASSWORD", "rootpass"),
+		Database: getEnv("DB_NAME", "chi_recap"),
+	}
+
+	// Initialize database connection
+	db, err := config.NewDatabaseConnection(dbConfig)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// Run migrations
+	if err := runMigrations(db); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
+	// Initialize repositories
+	todoRepo := persistence.NewTodoRepository(db)
+
+	// Initialize services
+	todoService := services.NewTodoService(todoRepo)
+
+	// Setup routes
+	router := api.SetupRoutes(todoService)
+
+	// Start server
+	port := getEnv("PORT", "8888")
+	addr := fmt.Sprintf("0.0.0.0:%s", port)
+	
+	log.Printf("Starting server on %s", addr)
+	if err := http.ListenAndServe(addr, router); err != nil {
+		log.Fatalf("Server error: %v", err)
 	}
 }
 
-func main() {
-	// Create a new router & API.
-	router := chi.NewMux()
-	api := humachi.New(router, huma.DefaultConfig("My API", "1.0.0"))
+// runMigrations runs database migrations
+func runMigrations(db *gorm.DB) error {
+	return db.AutoMigrate(&persistence.TodoModel{})
+}
 
-	// Register GET /greeting/{name} handler.
-	huma.Get(api, "/greeting/{name}", func(ctx context.Context, input *struct{
-		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
-	}) (*GreetingOutput, error) {
-		resp := &GreetingOutput{}
-		resp.Body.Message = fmt.Sprintf("Hello, %s!", input.Name)
-		return resp, nil
-	})
-
-	// Start the server!
-	http.ListenAndServe("127.0.0.1:8888", router)
+// getEnv gets an environment variable with a default value
+func getEnv(key, defaultValue string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return defaultValue
 }
